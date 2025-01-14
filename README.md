@@ -17,6 +17,7 @@ A simple console application written in C# that generates random passwords based
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/rloIV/csharp-password-generator/blob/main/Program.cs
+   git clone https://github.com/rloIV/csharp-password-generator.git
+
 
 
