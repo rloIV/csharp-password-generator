@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Text;
 
-namespace PasswordGeneratorApp
+namespace PasswordGeneratorAppV2
 {
     /// <summary>
     /// Represents the settings for password generation.
@@ -24,7 +24,6 @@ namespace PasswordGeneratorApp
                    $"- Include Special Characters: {(IncludeSpecialCharacters ? "Yes" : "No")}\n";
         }
     }
-
     /// <summary>
     /// Main program for generating passwords.
     /// </summary>
@@ -52,6 +51,34 @@ namespace PasswordGeneratorApp
             char choice = Console.ReadKey().KeyChar;
             Console.WriteLine();
             return choice == 'y' || choice == 'Y';
+        }
+
+        static string AssessPasswordStrength(string password)
+        {
+            int score = 0;
+
+            if (password.Length >= 8) score++;
+            if (password.Length >= 12) score++;
+            if (ContainsCharacterFromSet(password, SmallLetters)) score++;
+            if (ContainsCharacterFromSet(password, CapitalLetters)) score++;
+            if (ContainsCharacterFromSet(password, Numbers)) score++;
+            if (ContainsCharacterFromSet(password, SpecialCharacters)) score++;
+
+            return score switch
+            {
+                >= 5 => "Strong",
+                3 or 4 => "Medium",
+                _ => "Weak",
+            };
+        }
+
+        static bool ContainsCharacterFromSet(string input, string characterSet)
+        {
+            foreach (var ch in input)
+            {
+                if (characterSet.Contains(ch)) return true;
+            }
+            return false;
         }
 
         static string GeneratePassword(Password settings)
@@ -87,12 +114,12 @@ namespace PasswordGeneratorApp
 
             while (true)
             {
-                Console.WriteLine("\nPassword Generator Program");
+                Console.WriteLine("\nPassword Generator Program V2");
                 Console.WriteLine(settings); // Display current settings
                 Console.WriteLine("Menu:");
                 Console.WriteLine("1. Change password length");
                 Console.WriteLine("2. Configure password components");
-                Console.WriteLine("3. Generate password");
+                Console.WriteLine("3. Generate password and check strength");
                 Console.WriteLine("4. Exit");
                 Console.Write("Your choice: ");
 
@@ -132,7 +159,9 @@ namespace PasswordGeneratorApp
                         {
                             Console.WriteLine("Generating password...");
                             string password = GeneratePassword(settings);
+                            string strength = AssessPasswordStrength(password);
                             Console.WriteLine($"Generated Password: {password}");
+                            Console.WriteLine($"Password Strength: {strength}");
                         }
                         catch (InvalidOperationException ex)
                         {
